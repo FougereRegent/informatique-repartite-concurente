@@ -36,7 +36,7 @@ int main(int argc, char **argv) {
 void create_processus(const int nb_processus) {
   const unsigned int offset_tab_childs = 1;
   int index;
-  childs = (pid_t *)malloc(sizeof(pid_t) * (nb_processus + 1));
+  childs = (pid_t *)malloc(sizeof(pid_t) * (nb_processus + offset_tab_childs));
 
   if (childs == NULL) {
     perror("malloc() :");
