@@ -10,7 +10,7 @@ extern int stoi(const char *chaine) {
   unsigned int size_chaine = strlen(chaine);
   unsigned int exp = size_chaine - 1;
   unsigned int index;
-  int result;
+  int result = 0;
 
   for (index = 0; index < size_chaine; ++index) {
     char c = chaine[index];
