@@ -4,11 +4,13 @@ project(utils)
 
 set (SRC
   convert.c
-  shared_mem.c)
+  shared_mem.c
+  wrap_sem.c)
 
 set (HEADERS
     convert.h
-    shared_mem.h)
+    shared_mem.h
+    wrap_sem.h)
 
 add_library(utils ${SRC} ${HEADERS})
 target_link_libraries(utils m)

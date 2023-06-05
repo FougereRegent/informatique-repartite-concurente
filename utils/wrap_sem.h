@@ -16,6 +16,8 @@ extern int create_mutex();
 extern int mutex_lock(const id_sem id);
 extern int mutex_unlock(const id_sem id);
 
+extern int get_compteur(const id_sem id);
+
 extern int destroy_semaphore(const id_sem id);
 
 #endif
