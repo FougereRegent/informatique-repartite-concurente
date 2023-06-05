@@ -9,10 +9,10 @@ extern MemoirePartagee superMalloc(const int size) {
 #define OFFSET_SIZE_MEM_SHARED 2
   MemoirePartagee memoire;
   memoire.descriptor = shmget(IPC_PRIVATE, size + OFFSET_SIZE_MEM_SHARED,
-                              IPC_CREAT | IPC_EXCL | 0660);
-  memoire.size = size;
+                              IPC_CREAT | IPC_EXCL | 0600);
+  memoire.size = size + OFFSET_SIZE_MEM_SHARED;
   memoire.adresse = (int *)0;
-  if (memoire.descriptor == -1)
+  if (memoire.descriptor != -1)
     memoire.adresse = (int *)shmat(memoire.descriptor, NULL, 0);
 
   memoire.adresse[0] = memoire.size;
@@ -28,8 +28,8 @@ extern int superFree(MemoirePartagee *m) {
 }
 
 extern void addElement(MemoirePartagee *m, const int value) {
-  int *index = m->adresse + 2;
-  m->adresse[*index] = value;
+  int *index = m->adresse + 1;
+  m->adresse[*index + 2] = value;
   ++*index;
 }
 

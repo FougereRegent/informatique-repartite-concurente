@@ -5,6 +5,7 @@
 #include <unistd.h>
 
 #include "utils/convert.h"
+#include "utils/shared_mem.h"
 
 void create_processus(const int);
 
@@ -36,17 +37,20 @@ int main(int argc, char **argv) {
 void create_processus(const int nb_processus) {
 #define OFFSET_TAB_CHILDS 1
   int index;
-  childs = (pid_t *)malloc(sizeof(pid_t) * (nb_processus + OFFSET_TAB_CHILDS));
+  pid_t pid_observer;
+  MemoirePartagee sharedmemory;
+  sharedmemory = superMalloc(nb_processus + OFFSET_TAB_CHILDS);
 
-  if (childs == NULL) {
-    perror("malloc() :");
+  if (sharedmemory.descriptor == -1) {
+    printf("superMalloc(): Erreur d'allocations");
     exit(1);
   }
-
-  if ((*childs = fork()) == 0) {
+  if ((pid_observer = fork()) == 0) {
     printf("PID Child esclave observer: %d\n", getpid());
     exit(0);
   }
+
+  addElement(&sharedmemory, pid_observer);
 
   for (index = 0; index < nb_processus; index++) {
     pid_t currentPid = fork();
@@ -55,6 +59,8 @@ void create_processus(const int nb_processus) {
       exit(0);
     }
 
-    childs[index + OFFSET_TAB_CHILDS] = currentPid;
+    addElement(&sharedmemory, currentPid);
   }
+
+  superFree(&sharedmemory);
 }
