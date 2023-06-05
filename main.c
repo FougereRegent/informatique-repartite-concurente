@@ -16,6 +16,8 @@ int main(int argc, char **argv) {
 
   father = getpid();
 
+  /*Configure shared memory*/
+
   if (argc != 2) {
     printf("Il faut renseigner le nombre de processus esclave");
     exit(1);
@@ -29,14 +31,12 @@ int main(int argc, char **argv) {
   printf("PID Père : %d\n", father);
 
   create_processus(nb_processus);
-
-  return EXIT_SUCCESS;
 }
 
 void create_processus(const int nb_processus) {
-  const unsigned int offset_tab_childs = 1;
+#define OFFSET_TAB_CHILDS 1
   int index;
-  childs = (pid_t *)malloc(sizeof(pid_t) * (nb_processus + offset_tab_childs));
+  childs = (pid_t *)malloc(sizeof(pid_t) * (nb_processus + OFFSET_TAB_CHILDS));
 
   if (childs == NULL) {
     perror("malloc() :");
@@ -55,6 +55,6 @@ void create_processus(const int nb_processus) {
       exit(0);
     }
 
-    childs[index + offset_tab_childs] = currentPid;
+    childs[index + OFFSET_TAB_CHILDS] = currentPid;
   }
 }
