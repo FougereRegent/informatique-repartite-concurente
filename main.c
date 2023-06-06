@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
+#include <sys/wait.h>
 #include <unistd.h>
 
 #include "utils/convert.h"
@@ -62,8 +63,16 @@ void create_processus(const int nb_processus) {
   }
   if ((pid_observer = fork()) == 0) {
     printf("PID Child esclave observer: %d\n", getpid());
-    exit(0);
+    while (1) {
+      int i;
+      mutex_lock(id_mutex_proctect_sharedmemory);
+      for (i = 0; i < sharedmemory.adresse[0]; i++) {
+        printf("Observer %d\n", sharedmemory.adresse[i]);
+      }
+      mutex_unlock(id_mutex_proctect_sharedmemory);
+    }
   }
+
   mutex_lock(id_mutex_proctect_sharedmemory);
   addElement(&sharedmemory, pid_observer);
   mutex_unlock(id_mutex_proctect_sharedmemory);
@@ -74,7 +83,7 @@ void create_processus(const int nb_processus) {
       printf("PID Child esclave : %d\n", getpid());
       exit(0);
     }
-    mutex_unlock(id_mutex_proctect_sharedmemory);
+    mutex_lock(id_mutex_proctect_sharedmemory);
     addElement(&sharedmemory, currentPid);
     mutex_unlock(id_mutex_proctect_sharedmemory);
   }
