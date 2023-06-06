@@ -13,5 +13,5 @@ extern MemoirePartagee superMalloc(const int taille);
 extern int superFree(MemoirePartagee *m);
 extern void addElement(MemoirePartagee *m, const int value);
 extern int *readElements(MemoirePartagee *m);
-
+extern void deleteElement(MemoirePartagee *m, const int value);
 #endif

@@ -5,6 +5,8 @@
 
 #include "shared_mem.h"
 
+static void delete_element_in_tab(int *m, int *index_max, int index_to_delete);
+
 extern MemoirePartagee superMalloc(const int size) {
 #define OFFSET_SIZE_MEM_SHARED 2
   MemoirePartagee memoire;
@@ -33,4 +35,23 @@ extern void addElement(MemoirePartagee *m, const int value) {
   ++*index;
 }
 
+extern void deleteElement(MemoirePartagee *m, const int value) {
+  int index;
+  int *size = &(m->adresse[1]);
+  for (index = 0; index < *size + 1; ++index) {
+    if (m->adresse[2 + index] == value) {
+      delete_element_in_tab(&(m->adresse[2]), &(m->adresse[1]), index);
+    }
+  }
+}
+
+static void delete_element_in_tab(int *m, int *index_max, int index_to_delete) {
+  if (index_to_delete < *index_max) {
+    int index;
+    for (index = index_to_delete; index < *index_max; ++index) {
+      m[index] = m[index + 1];
+    }
+  }
+  (*index_max)--;
+}
 extern int *readElements(MemoirePartagee *m) { return m->adresse; }
