@@ -1,11 +1,9 @@
-#ifndef OBSERVATEUR_H
-#define OBSERVATEUR_H
+#ifndef _OBSERVATEUR_H
+#define _OBSERVATEUR_H
 
+#include "../utils/shared_mem.h"
 #include <sys/types.h>
-typedef struct {
-  pid_t pid;
-  int sockfd;
-} DataAnnuaire;
 
-extern void initObservateur(const int size);
+extern void initObservateur(MemoirePartagee *m);
+
 #endif

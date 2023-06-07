@@ -5,6 +5,7 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
+#include "observateur/observateur.h"
 #include "utils/convert.h"
 #include "utils/shared_mem.h"
 #include "utils/wrap_sem.h"
@@ -67,9 +68,7 @@ void create_processus(const int nb_processus) {
   }
   if ((pid_observer = fork()) == 0) {
     printf("PID Child esclave observer: %d\n", getpid());
-    while (1) {
-    }
-    exit(0);
+    initObservateur(&sharedmemory);
   }
 
   mutex_lock(id_mutex_proctect_sharedmemory);

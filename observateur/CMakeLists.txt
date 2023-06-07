@@ -5,4 +5,5 @@ project(observateur)
 set (SRC observateur.c)
 set (HEADERS observateur.h)
 
-add_library(observateur ${SRC} ${HEADERS})
+add_library(observateur ${SRC})
+target_link_libraries(observateur utils)
