@@ -1,7 +1,9 @@
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
 #include <sys/unistd.h>
+#include <sys/wait.h>
 
 #include "../utils/wrap_sem.h"
 #include "../utils/wrap_signal.h"
@@ -23,11 +25,14 @@ typedef struct {
 static Annuary annuary;
 
 /*Définition des prototypes*/
-static void kill_process(const int code);
+static void kill_process(int code);
 static void loop(Annuary annuary);
 
 extern void initObservateur(MemoirePartagee *m) {
   id_sem id_mutex_shared_memory = create_mutex();
+
+  signal(SIGINT, &kill_process);
+
   mutex_lock(id_mutex_shared_memory);
   annuary.pids = m->adresse + OFFSET_OBSERVER_TAB;
   annuary.size_tab = m->adresse + OFFSET_SIZE;
@@ -37,13 +42,17 @@ extern void initObservateur(MemoirePartagee *m) {
   loop(annuary);
 };
 
-static void kill_procrss(const int code) {
+static void kill_process(int code) {
   pid_t my_own_pid = getpid();
   int index;
   int size = *annuary.size_tab;
 
-  for (index = OFFSET_OBSERVER_TAB; index < size; index++) {
+  for (index = 0; index < size; index++) {
+    int state;
+    waitpid(annuary.pids[index], &state, 0);
   }
+
+  exit(0);
 }
 static void loop(Annuary annuary) {
   while (1) {

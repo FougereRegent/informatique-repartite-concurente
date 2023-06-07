@@ -79,6 +79,8 @@ void create_processus(const int nb_processus) {
     pid_t currentPid = fork();
     if (currentPid == 0) {
       printf("PID Child esclave : %d\n", getpid());
+      while (1) {
+      }
       exit(0);
     }
     mutex_lock(id_mutex_proctect_sharedmemory);
