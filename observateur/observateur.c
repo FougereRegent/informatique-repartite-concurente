@@ -15,10 +15,13 @@
 
 /*Défintion des structures*/
 typedef struct {
-  pid_t *pids;
-  int *size_tab;
-  int *index_tab;
+  pid_t pid;
   int socket;
+} nodeAnnuary;
+
+typedef struct {
+  nodeAnnuary *node;
+  int size_tab;
 } Annuary;
 
 /*Définition des variables globales*/
@@ -34,9 +37,7 @@ extern void initObservateur(MemoirePartagee *m) {
   signal(SIGINT, &kill_process);
 
   mutex_lock(id_mutex_shared_memory);
-  annuary.pids = m->adresse + OFFSET_OBSERVER_TAB;
-  annuary.size_tab = m->adresse + OFFSET_SIZE;
-  annuary.index_tab = m->adresse + OFFSET_INDEX;
+  annuary.size_tab = *(m->adresse + OFFSET_SIZE);
   mutex_unlock(id_mutex_shared_memory);
 
   loop(annuary);
@@ -45,11 +46,11 @@ extern void initObservateur(MemoirePartagee *m) {
 static void kill_process(int code) {
   pid_t my_own_pid = getpid();
   int index;
-  int size = *annuary.size_tab;
+  int size = annuary.size_tab;
 
   for (index = 0; index < size; index++) {
     int state;
-    waitpid(annuary.pids[index], &state, 0);
+    waitpid(annuary.node[index].pid, &state, 0);
   }
 
   exit(0);
@@ -57,4 +58,18 @@ static void kill_process(int code) {
 static void loop(Annuary annuary) {
   while (1) {
   }
+}
+
+static Annuary create_annuary(const pid_t *pids, const int size) {
+  int index;
+  Annuary annuary;
+  annuary.node = (nodeAnnuary *)malloc(size * sizeof(nodeAnnuary));
+  annuary.size_tab = size;
+
+  for (index = 0; index < size; index++) {
+    nodeAnnuary node = {.pid = pids[index]};
+    annuary.node[index] = node;
+  }
+
+  return annuary;
 }
