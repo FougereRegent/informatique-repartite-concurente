@@ -74,7 +74,7 @@ static void create_processus(const int nb_processus) {
   }
   if ((pid_observer = fork()) == 0) {
     printf("PID Child esclave observer: %d\n", getpid());
-    initObservateur(&sharedmemory);
+    initObservateur(&sharedmemory, pipes, SET_NB_PIPES(nb_processus));
   }
 
   mutex_lock(id_mutex_proctect_sharedmemory);

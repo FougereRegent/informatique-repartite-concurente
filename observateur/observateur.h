@@ -2,8 +2,9 @@
 #define _OBSERVATEUR_H
 
 #include "../utils/shared_mem.h"
+#include "../utils/wrap_pipe.h"
 #include <sys/types.h>
 
-extern void initObservateur(MemoirePartagee *m);
-
+extern void initObservateur(MemoirePartagee *m, PipeDescriptor *pipes,
+                            const int size);
 #endif

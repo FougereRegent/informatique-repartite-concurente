@@ -8,6 +8,11 @@ typedef struct {
   int write_descriptor;
 } PipeDescriptor;
 
+typedef struct {
+  PipeDescriptor writer;
+  PipeDescriptor reader;
+} PipeCommunication;
+
 extern PipeDescriptor *create_pipe(const int nb_pipes);
 extern int write_into_pipe(const PipeDescriptor *pipe, const void *message,
                            const size_t size);
