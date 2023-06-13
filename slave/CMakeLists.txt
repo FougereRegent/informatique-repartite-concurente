@@ -7,6 +7,7 @@ set(SRC
     server.c
     trace.c 
     intelligence.c
+    init.c
   )
 
 set (HEADERS
@@ -14,6 +15,7 @@ set (HEADERS
     server.h 
     trace.h 
     intelligence.h 
+    init.h
     )
 
 add_library(slave ${SRC} ${HEADERS})

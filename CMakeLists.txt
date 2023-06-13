@@ -9,4 +9,4 @@ add_subdirectory(utils)
 add_subdirectory(observateur)
 
 add_executable(bin main.c)
-target_link_libraries(bin utils observateur)
+target_link_libraries(bin utils observateur slave)

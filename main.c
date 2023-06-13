@@ -6,16 +6,22 @@
 #include <unistd.h>
 
 #include "observateur/observateur.h"
+#include "slave/init.h"
 #include "utils/convert.h"
 #include "utils/shared_mem.h"
+#include "utils/wrap_pipe.h"
 #include "utils/wrap_sem.h"
 #include "utils/wrap_signal.h"
 
-void create_processus(const int);
+#define SET_NB_PIPES(X) 2 * X
+
+static void create_processus(const int size);
+static void init_pipes(const int size);
 static void stop_app(int code);
 
 static pid_t *childs;
 static pid_t father;
+static PipeDescriptor *pipes;
 
 static MemoirePartagee sharedmemory;
 int main(int argc, char **argv) {
@@ -26,7 +32,7 @@ int main(int argc, char **argv) {
   /*Configure shared memory*/
 
   if (argc != 2) {
-    printf("Il faut renseigner le nombre de processus esclave");
+    printf("Il faut renseigner le nombre de processus esclave\n");
     exit(1);
   }
   nb_processus = stoi(argv[1]);
@@ -36,11 +42,11 @@ int main(int argc, char **argv) {
   }
 
   change_signal(SIGINT, &stop_app);
-
+  init_pipes(SET_NB_PIPES(nb_processus));
   create_processus(nb_processus);
 }
 
-void create_processus(const int nb_processus) {
+static void create_processus(const int nb_processus) {
 #define OFFSET_TAB_CHILDS 1
   int index;
   int stat;
@@ -79,9 +85,7 @@ void create_processus(const int nb_processus) {
     pid_t currentPid = fork();
     if (currentPid == 0) {
       printf("PID Child esclave : %d\n", getpid());
-      while (1) {
-      }
-      exit(0);
+      slave_init(pipes);
     }
     mutex_lock(id_mutex_proctect_sharedmemory);
     addElement(&sharedmemory, currentPid);
@@ -97,5 +101,13 @@ static void stop_app(int code) {
   pid_t *pids = NULL;
   if (sharedmemory.adresse != NULL) {
     kill_all_process(pids, size);
+  }
+}
+
+static void init_pipes(const int nb_pipes) {
+  pipes = create_pipe(nb_pipes);
+  if (pipes == NULL) {
+    perror("malloc() : ");
+    exit(1);
   }
 }
