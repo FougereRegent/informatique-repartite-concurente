@@ -5,6 +5,6 @@
 #include "../utils/wrap_pipe.h"
 #include <sys/types.h>
 
-extern void initObservateur(MemoirePartagee *m, PipeDescriptor *pipes,
+extern void initObservateur(MemoirePartagee *m, PipeCommunication *pipes,
                             const int size);
 #endif

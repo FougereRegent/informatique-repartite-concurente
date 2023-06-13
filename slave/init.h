@@ -3,6 +3,6 @@
 
 #include "../utils/wrap_pipe.h"
 
-extern void slave_init(PipeDescriptor *pipe);
+extern void slave_init(PipeCommunication *pipe);
 
 #endif

@@ -7,7 +7,7 @@
 
 static void kill_process();
 
-extern void slave_init(PipeDescriptor *pipe) {
+extern void slave_init(PipeCommunication *pipe) {
 
   change_signal(SIGINT, &kill_process);
   while (1) {

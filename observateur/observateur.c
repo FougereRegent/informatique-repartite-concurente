@@ -31,7 +31,7 @@ static Annuary annuary;
 static void kill_process(int code);
 static void loop(Annuary annuary);
 
-extern void initObservateur(MemoirePartagee *m, PipeDescriptor *pipes,
+extern void initObservateur(MemoirePartagee *m, PipeCommunication *pipes,
                             const int size) {
   id_sem id_mutex_shared_memory = create_mutex();
 
@@ -43,8 +43,6 @@ extern void initObservateur(MemoirePartagee *m, PipeDescriptor *pipes,
 
   int index;
   for (index = 0; index < size; index++) {
-    printf("Pipes %d : %d | %d\n", index, pipes[index].read_descriptor,
-           pipes[index].write_descriptor);
   }
 
   loop(annuary);

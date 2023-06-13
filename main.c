@@ -1,3 +1,4 @@
+#include <iterator>
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -16,16 +17,19 @@
 #define SET_NB_PIPES(X) 2 * X
 
 static void create_processus(const int size);
-static void init_pipes(const int size);
+static PipeDescriptor *init_pipes(const int size);
 static void stop_app(int code);
 
 static pid_t *childs;
 static pid_t father;
-static PipeDescriptor *pipes;
+static PipeCommunication *communication;
 
 static MemoirePartagee sharedmemory;
 int main(int argc, char **argv) {
   int nb_processus;
+  int index;
+  PipeDescriptor *pipes;
+  PipeCommunication *i;
 
   father = getpid();
 
@@ -42,7 +46,26 @@ int main(int argc, char **argv) {
   }
 
   change_signal(SIGINT, &stop_app);
-  init_pipes(SET_NB_PIPES(nb_processus));
+  pipes = init_pipes(SET_NB_PIPES(nb_processus));
+
+  communication = malloc(sizeof(PipeCommunication) * nb_processus);
+  if (communication == NULL) {
+    perror("malloc() : ");
+    exit(1);
+  }
+
+  i = communication;
+
+  for (index = 0; index < SET_NB_PIPES(nb_processus); index++) {
+    if (index % 2 == 0) {
+      i->reader.write_descriptor = pipes[index].write_descriptor;
+      i->reader.read_descriptor = pipes[index].read_descriptor;
+    } else {
+      i->writer.write_descriptor = pipes[index].write_descriptor;
+      i->reader.read_descriptor = pipes[index].read_descriptor;
+      i++;
+    }
+  }
   create_processus(nb_processus);
 }
 
@@ -74,7 +97,7 @@ static void create_processus(const int nb_processus) {
   }
   if ((pid_observer = fork()) == 0) {
     printf("PID Child esclave observer: %d\n", getpid());
-    initObservateur(&sharedmemory, pipes, SET_NB_PIPES(nb_processus));
+    initObservateur(&sharedmemory, communication, SET_NB_PIPES(nb_processus));
   }
 
   mutex_lock(id_mutex_proctect_sharedmemory);
@@ -85,7 +108,7 @@ static void create_processus(const int nb_processus) {
     pid_t currentPid = fork();
     if (currentPid == 0) {
       printf("PID Child esclave : %d\n", getpid());
-      slave_init(pipes);
+      slave_init(communication);
     }
     mutex_lock(id_mutex_proctect_sharedmemory);
     addElement(&sharedmemory, currentPid);
@@ -102,12 +125,17 @@ static void stop_app(int code) {
   if (sharedmemory.adresse != NULL) {
     kill_all_process(pids, size);
   }
+
+  free(communication);
 }
 
-static void init_pipes(const int nb_pipes) {
+static PipeDescriptor *init_pipes(const int nb_pipes) {
+  PipeDescriptor *pipes;
+  int index;
   pipes = create_pipe(nb_pipes);
   if (pipes == NULL) {
     perror("malloc() : ");
     exit(1);
   }
+  return pipes;
 }
