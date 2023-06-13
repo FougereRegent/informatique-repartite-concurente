@@ -43,6 +43,10 @@ extern void initObservateur(MemoirePartagee *m, PipeCommunication *pipes,
 
   int index;
   for (index = 0; index < size; index++) {
+    printf("Reader %d : %d | %d\n", index, pipes[index].reader.read_descriptor,
+           pipes[index].reader.write_descriptor);
+    printf("Writer %d : %d | %d\n", index, pipes[index].writer.read_descriptor,
+           pipes[index].writer.write_descriptor);
   }
 
   loop(annuary);

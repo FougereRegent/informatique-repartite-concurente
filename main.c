@@ -1,4 +1,3 @@
-#include <iterator>
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -62,7 +61,7 @@ int main(int argc, char **argv) {
       i->reader.read_descriptor = pipes[index].read_descriptor;
     } else {
       i->writer.write_descriptor = pipes[index].write_descriptor;
-      i->reader.read_descriptor = pipes[index].read_descriptor;
+      i->writer.read_descriptor = pipes[index].read_descriptor;
       i++;
     }
   }
@@ -97,7 +96,7 @@ static void create_processus(const int nb_processus) {
   }
   if ((pid_observer = fork()) == 0) {
     printf("PID Child esclave observer: %d\n", getpid());
-    initObservateur(&sharedmemory, communication, SET_NB_PIPES(nb_processus));
+    initObservateur(&sharedmemory, communication, nb_processus);
   }
 
   mutex_lock(id_mutex_proctect_sharedmemory);
