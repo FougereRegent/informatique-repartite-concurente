@@ -7,6 +7,7 @@
 #include "init.h"
 
 static void kill_process();
+static void create_thread();
 
 extern void slave_init(PipeCommunication *pipe) {
 
