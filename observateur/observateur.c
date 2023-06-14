@@ -1,9 +1,12 @@
+#include <bits/types/struct_timeval.h>
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/select.h>
 #include <sys/types.h>
 #include <sys/unistd.h>
 #include <sys/wait.h>
+#include <unistd.h>
 
 #include "../utils/wrap_sem.h"
 #include "../utils/wrap_signal.h"
@@ -32,6 +35,7 @@ static void kill_process(int code);
 static void loop(Annuary annuary);
 static Annuary create_annuary(const pid_t *pids, PipeCommunication *pipes,
                               const int size);
+static void check_pipe(PipeCommunication *pipe);
 
 extern void initObservateur(MemoirePartagee *m, PipeCommunication *pipes,
                             const int size) {
@@ -84,7 +88,11 @@ static void kill_process(int code) {
   exit(0);
 }
 static void loop(Annuary annuary) {
+  int index;
   while (1) {
+    for (index = 0; index < annuary.size_tab; index++) {
+      check_pipe(annuary.node[index].pipe);
+    }
   }
 }
 
@@ -102,4 +110,23 @@ static Annuary create_annuary(const pid_t *pids, PipeCommunication *pipes,
   return annuary;
 }
 
-static void check_pipe() {}
+static void check_pipe(PipeCommunication *pipe) {
+  struct timeval timeout;
+  fd_set set;
+
+  FD_ZERO(&set);
+  FD_SET(pipe->reader.read_descriptor, &set);
+
+  timeout.tv_sec = 10;
+  timeout.tv_usec = 0;
+
+  int retour = select(FD_SETSIZE, &set, NULL, NULL, &timeout);
+
+  if (retour == 0) {
+    printf("Rien à afficher\n");
+  } else if (retour < 0) {
+    perror("select() : ");
+  } else {
+    printf("Lecture du pipe");
+  }
+}
