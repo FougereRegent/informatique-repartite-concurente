@@ -35,3 +35,11 @@ extern int read_into_pipe(const PipeDescriptor *pipe, void *message,
   read_size = read(read_descriptor, message, size);
   return read_size;
 }
+
+extern void close_pipe(const PipeDescriptor *pipe) {
+  int fd_read = pipe->read_descriptor;
+  int fd_write = pipe->write_descriptor;
+
+  close(fd_read);
+  close(fd_write);
+}
