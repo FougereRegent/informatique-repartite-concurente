@@ -9,7 +9,7 @@ extern int kill_all_process(const pid_t *pids, const int size) {
   int result = 0;
 
   for (index = pids; index < (pids + size); ++index) {
-    result |= kill(*index, SIGINT);
+    result |= kill(*index, SIGTERM);
   }
 
   return result != 0 ? -1 : result;

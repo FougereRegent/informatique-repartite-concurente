@@ -1,3 +1,4 @@
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/signal.h>
@@ -9,7 +10,7 @@ static void kill_process();
 
 extern void slave_init(PipeCommunication *pipe) {
 
-  change_signal(SIGINT, &kill_process);
+  change_signal(SIGTERM, &kill_process);
   while (1) {
   }
 }
