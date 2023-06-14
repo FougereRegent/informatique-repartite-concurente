@@ -44,7 +44,7 @@ extern void initObservateur(MemoirePartagee *m, PipeCommunication *pipes,
   id_sem id_mutex_shared_memory = create_mutex();
   Annuary a;
 
-  signal(SIGINT, &kill_process);
+  signal(SIGTERM, &kill_process);
 
   mutex_lock(id_mutex_shared_memory);
   size_tab = *(m->adresse + OFFSET_SIZE);
@@ -85,6 +85,7 @@ static void kill_process(int code) {
     waitpid(annuary->node[index].pid, &state, 0);
   }
 
+  printf("Fin du process observer\n");
   exit(0);
 }
 static void loop(Annuary annuary) {

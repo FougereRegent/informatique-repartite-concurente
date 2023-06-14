@@ -122,7 +122,7 @@ static void stop_app(int code) {
   int size;
   pid_t *pids = NULL;
   if (sharedmemory.adresse != NULL) {
-    pids = sharedmemory.adresse;
+    pids = sharedmemory.adresse + 2;
     kill_all_process(pids, size);
   }
 
