@@ -36,6 +36,8 @@ static void loop(Annuary annuary);
 static Annuary create_annuary(const pid_t *pids, PipeCommunication *pipes,
                               const int size);
 static void check_pipe(PipeCommunication *pipe);
+static void store_log();
+static void send_data();
 
 extern void initObservateur(MemoirePartagee *m, PipeCommunication *pipes,
                             const int size) {
@@ -128,6 +130,9 @@ static void check_pipe(PipeCommunication *pipe) {
   } else if (retour < 0) {
     perror("select() : ");
   } else {
-    printf("Lecture du pipe");
+    Message message;
+    int nb_byte = read_into_pipe(&pipe->writer, &message, sizeof(Message));
+
+    printf("%d, %s\n", message.type, message.message);
   }
 }

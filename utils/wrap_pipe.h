@@ -3,6 +3,10 @@
 
 #include <sys/types.h>
 
+#define DEFAULT_SIZE_BUFFER 1024
+
+typedef enum { GET_CONF, SET_CONF } TYPE_MESSAGE;
+
 typedef struct {
   int read_descriptor;
   int write_descriptor;
@@ -12,6 +16,12 @@ typedef struct {
   PipeDescriptor writer;
   PipeDescriptor reader;
 } PipeCommunication;
+
+typedef struct {
+  int size;
+  TYPE_MESSAGE type;
+  char message[DEFAULT_SIZE_BUFFER];
+} Message;
 
 extern PipeDescriptor *create_pipe(const int nb_pipes);
 extern int write_into_pipe(const PipeDescriptor *pipe, const void *message,

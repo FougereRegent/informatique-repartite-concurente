@@ -15,11 +15,13 @@ extern void slave_init(PipeCommunication *pipe) {
 
   change_signal(SIGTERM, &kill_process);
   while (1) {
-    int size = write_into_pipe(&pipe->writer, "test", strlen("test"));
+    Message message = {.size = 1024, SET_CONF, "salut tous le monde"};
+    int size = write_into_pipe(&pipe->writer, &message, sizeof(Message));
+
     printf("Taille : %d, descriptor : %d\n", size,
            pipe->writer.write_descriptor);
 
-    sleep(10);
+    sleep(100);
   }
 }
 
