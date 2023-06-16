@@ -36,8 +36,8 @@ static void loop(Annuary annuary);
 static Annuary create_annuary(const pid_t *pids, PipeCommunication *pipes,
                               const int size);
 static void check_pipe(PipeCommunication *pipe);
+static void send_message(PipeCommunication *pipe, Message message);
 static void store_log();
-static void send_data();
 
 extern void initObservateur(MemoirePartagee *m, PipeCommunication *pipes,
                             const int size) {
@@ -120,13 +120,12 @@ static void check_pipe(PipeCommunication *pipe) {
   FD_ZERO(&set);
   FD_SET(pipe->writer.read_descriptor, &set);
 
-  timeout.tv_sec = 1;
+  timeout.tv_sec = 0;
   timeout.tv_usec = 0;
 
   int retour = select(FD_SETSIZE, &set, NULL, NULL, &timeout);
 
   if (retour == 0) {
-    printf("Rien à afficher\n");
   } else if (retour < 0) {
     perror("select() : ");
   } else {
@@ -136,3 +135,5 @@ static void check_pipe(PipeCommunication *pipe) {
     printf("%d, %s\n", message.type, message.message);
   }
 }
+
+static void send_message(PipeCommunication *pipe, Message message) {}
