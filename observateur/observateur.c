@@ -116,9 +116,9 @@ static void check_pipe(PipeCommunication *pipe) {
   fd_set set;
 
   FD_ZERO(&set);
-  FD_SET(pipe->reader.read_descriptor, &set);
+  FD_SET(pipe->writer.read_descriptor, &set);
 
-  timeout.tv_sec = 10;
+  timeout.tv_sec = 1;
   timeout.tv_usec = 0;
 
   int retour = select(FD_SETSIZE, &set, NULL, NULL, &timeout);
