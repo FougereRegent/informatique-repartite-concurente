@@ -37,7 +37,10 @@ static Annuary create_annuary(const pid_t *pids, PipeCommunication *pipes,
                               const int size);
 static void check_pipe(PipeCommunication *pipe);
 static void send_message(PipeCommunication *pipe, Message message);
-static void store_log();
+static void router(PipeCommunication *pipe, Message message);
+static void set_conf(PipeCommunication *pipe, char *message);
+static void get_conf(PipeCommunication *pipe, char *message);
+static void store_log(PipeCommunication *pipe, char *message);
 
 extern void initObservateur(MemoirePartagee *m, PipeCommunication *pipes,
                             const int size) {
@@ -136,4 +139,24 @@ static void check_pipe(PipeCommunication *pipe) {
   }
 }
 
-static void send_message(PipeCommunication *pipe, Message message) {}
+static void router(PipeCommunication *pipe, Message message) {
+  TYPE_MESSAGE type = message.type;
+
+  switch (type) {
+  case LOG:
+    store_log(pipe, message.message);
+    break;
+  case SET_CONF:
+    set_conf(pipe, message.message);
+    break;
+  case GET_CONF:
+    get_conf(pipe, message.message);
+    break;
+  }
+}
+
+static void set_conf(PipeCommunication *pipe, char *message) {}
+
+static void get_conf(PipeCommunication *pipe, char *message) {}
+
+static void store_log(PipeCommunication *pipe, char *message) {}

@@ -5,7 +5,7 @@
 
 #define DEFAULT_SIZE_BUFFER 1024
 
-typedef enum { GET_CONF, SET_CONF } TYPE_MESSAGE;
+typedef enum { LOG, GET_CONF, SET_CONF } TYPE_MESSAGE;
 
 typedef struct {
   int read_descriptor;
@@ -18,7 +18,6 @@ typedef struct {
 } PipeCommunication;
 
 typedef struct {
-  int size;
   TYPE_MESSAGE type;
   char message[DEFAULT_SIZE_BUFFER];
 } Message;
