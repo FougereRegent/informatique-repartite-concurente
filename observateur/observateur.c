@@ -8,6 +8,7 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
+#include "../utils/comunication.h"
 #include "../utils/wrap_sem.h"
 #include "../utils/wrap_signal.h"
 #include "observateur.h"

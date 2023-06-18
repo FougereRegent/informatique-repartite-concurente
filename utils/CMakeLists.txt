@@ -14,7 +14,8 @@ set (HEADERS
     shared_mem.h
     wrap_sem.h
     wrap_signal.h
-    wrap_pipe.h)
+    wrap_pipe.h
+    comunication.h)
 
 add_library(utils ${SRC} ${HEADERS})
 target_link_libraries(utils m)
