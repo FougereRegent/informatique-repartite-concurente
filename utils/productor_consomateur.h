@@ -13,7 +13,7 @@ typedef struct {
   Message *buffer;
 } proc_cons_locker;
 
-extern proc_cons_locker create_lock(Message *buffer, const int size_element);
+extern proc_cons_locker *create_lock(Message *buffer, const int size_element);
 extern void product(proc_cons_locker *locker, Message value);
 extern Message consume(proc_cons_locker *locker);
 #endif

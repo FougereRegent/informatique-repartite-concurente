@@ -7,6 +7,7 @@
 #include <unistd.h>
 
 #include "../utils/comunication.h"
+#include "../utils/productor_consomateur.h"
 #include "../utils/wrap_signal.h"
 #include "init.h"
 
@@ -25,10 +26,6 @@ static void *thread_server();
 
 /*Déclaration des variables static*/
 static pthread_t threads[NB_THREAD];
-static Message *buffer_trace_to_smart;
-static Message *buffer_smart_to_trace;
-static Message *buffer_smart_to_client;
-static Message *buffer_server_to_smart;
 
 extern void slave_init(PipeCommunication *pipe) {
   change_signal(SIGTERM, &kill_process);
@@ -50,15 +47,25 @@ static void kill_process() {
 }
 
 static int init_buffer() {
-  buffer_trace_to_smart = (Message *)calloc(BUFFER_SIZE, sizeof(Message));
-  buffer_smart_to_trace = (Message *)calloc(BUFFER_SIZE, sizeof(Message));
-  buffer_smart_to_client = (Message *)calloc(BUFFER_SIZE, sizeof(Message));
-  buffer_server_to_smart = (Message *)calloc(BUFFER_SIZE, sizeof(Message));
+  int error;
+  Message *buffer_trace_to_smart =
+      (Message *)calloc(BUFFER_SIZE, sizeof(Message));
+  Message *buffer_smart_to_trace =
+      (Message *)calloc(BUFFER_SIZE, sizeof(Message));
+  Message *buffer_smart_to_client =
+      (Message *)calloc(BUFFER_SIZE, sizeof(Message));
+  Message *buffer_server_to_smart =
+      (Message *)calloc(BUFFER_SIZE, sizeof(Message));
 
-  return buffer_smart_to_trace == NULL || buffer_smart_to_client == NULL ||
-                 buffer_trace_to_smart == NULL || buffer_server_to_smart
-             ? NO_ERROR
-             : ERROR;
+  error = buffer_smart_to_trace == NULL || buffer_smart_to_client == NULL ||
+                  buffer_trace_to_smart == NULL || buffer_server_to_smart
+              ? NO_ERROR
+              : ERROR;
+
+  if (error == ERROR)
+    return error;
+
+  return error;
 }
 
 static int init_threads() {
