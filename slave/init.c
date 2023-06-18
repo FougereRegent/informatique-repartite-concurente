@@ -8,8 +8,13 @@
 #include "../utils/wrap_signal.h"
 #include "init.h"
 
+#define BUFFER_SIZE 10
+
 static void kill_process();
-static void create_thread();
+static void thread_intelligence();
+static void thread_trace();
+static void thread_client();
+static void thread_serveur();
 
 extern void slave_init(PipeCommunication *pipe) {
   change_signal(SIGTERM, &kill_process);
@@ -19,5 +24,3 @@ static void kill_process() {
   printf("Kill slave process \n");
   exit(0);
 }
-
-static void create_thread() {}
