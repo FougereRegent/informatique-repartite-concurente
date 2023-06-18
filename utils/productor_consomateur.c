@@ -18,5 +18,27 @@ extern proc_cons_locker create_lock(Message *buffer, const int size_element) {
   return locker;
 }
 
-extern void product(proc_cons_locker *locker, Message value) {}
-extern Message consume(proc_cons_locker *locker) {}
+extern void product(proc_cons_locker *locker, Message value) {
+  P(locker->empty);
+  P(locker->mutex);
+
+  /*Insertion des items*/
+  locker->buffer[locker->index] = value;
+  locker->index++;
+
+  V(locker->mutex);
+  V(locker->full);
+}
+
+extern Message consume(proc_cons_locker *locker) {
+  Message message;
+  P(locker->full);
+  P(locker->mutex);
+
+  message = locker->buffer[locker->index];
+  locker->index--;
+
+  V(locker->mutex);
+  V(locker->empty);
+  return message;
+}
