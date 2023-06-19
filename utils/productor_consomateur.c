@@ -38,8 +38,8 @@ extern Message consume(proc_cons_locker *locker) {
   P(locker->full);
   P(locker->mutex);
 
-  message = locker->buffer[locker->index];
   locker->index--;
+  message = locker->buffer[locker->index];
 
   V(locker->mutex);
   V(locker->empty);
