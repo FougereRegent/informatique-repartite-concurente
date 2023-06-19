@@ -5,5 +5,6 @@
 
 extern void smart_loop(proc_cons_locker *locker_producteur_client,
                        proc_cons_locker *locker_consomateur_server,
-                       proc_cons_locker *locker_trace);
+                       proc_cons_locker *locker_consomateur_trace,
+                       proc_cons_locker *locker_producteur_trace);
 #endif

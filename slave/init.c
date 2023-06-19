@@ -101,7 +101,7 @@ static int init_threads() {
 }
 
 static void *thread_intelligence() {
-  smart_loop(smart_to_client, server_to_smart);
+  smart_loop(smart_to_client, server_to_smart, trace_to_smart, smart_to_trace);
   return NULL;
 }
 static void *thread_trace() {
