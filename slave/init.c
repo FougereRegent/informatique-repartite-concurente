@@ -36,8 +36,11 @@ static proc_cons_locker *smart_to_trace;
 static proc_cons_locker *smart_to_client;
 static proc_cons_locker *server_to_smart;
 static PipeCommunication *pipe_to_observer;
+static pid_t *pid;
 
 extern void slave_init(PipeCommunication *pipe) {
+  pid = malloc(sizeof(pid));
+  *pid = getpid();
   pipe_to_observer = pipe;
   change_signal(SIGTERM, &kill_process);
   /*Init buffer*/
@@ -49,6 +52,9 @@ extern void slave_init(PipeCommunication *pipe) {
   if (init_threads() == ERROR) {
     perror("pthread() : ");
     exit(EXIT_FAILURE);
+  }
+
+  while (1) {
   }
 }
 
@@ -107,7 +113,6 @@ static void *thread_client() {
   return NULL;
 }
 static void *thread_server() {
-  pid_t pid = getgid();
-  server_loop(server_to_smart, pid);
+  server_loop(server_to_smart, *pid);
   return NULL;
 }
