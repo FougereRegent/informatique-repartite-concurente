@@ -11,5 +11,7 @@ extern void trace_loop(proc_cons_locker *locker_producteur,
 
   while (1) {
     message_consomateur = consume(locker_consomateur);
+
+    write_into_pipe(pipes->writer, const void *message, const size_t size)
   }
 }
