@@ -11,6 +11,7 @@
 #include "../utils/wrap_signal.h"
 #include "client.h"
 #include "init.h"
+#include "intelligence.h"
 #include "server.h"
 #include "trace.h"
 
@@ -33,8 +34,10 @@ static proc_cons_locker *trace_to_smart;
 static proc_cons_locker *smart_to_trace;
 static proc_cons_locker *smart_to_client;
 static proc_cons_locker *server_to_smart;
+static PipeCommunication *pipe_to_observer;
 
 extern void slave_init(PipeCommunication *pipe) {
+  pipe_to_observer = pipe;
   change_signal(SIGTERM, &kill_process);
   /*Init buffer*/
   if (init_buffer() == ERROR) {
@@ -90,7 +93,19 @@ static int init_threads() {
   return result != 0 ? ERROR : NO_ERROR;
 }
 
-static void *thread_intelligence() { return NULL; }
-static void *thread_trace() { return NULL; }
-static void *thread_client() { return NULL; }
-static void *thread_server() { return NULL; }
+static void *thread_intelligence() {
+  smart_loop(smart_to_client, server_to_smart);
+  return NULL;
+}
+static void *thread_trace() {
+  trace_loop(trace_to_smart, smart_to_trace, pipe_to_observer);
+  return NULL;
+}
+static void *thread_client() {
+  client_loop(smart_to_client);
+  return NULL;
+}
+static void *thread_server() {
+  client_loop(server_to_smart);
+  return NULL;
+}
