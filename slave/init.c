@@ -1,4 +1,5 @@
 #include <pthread.h>
+#include <sched.h>
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -106,6 +107,7 @@ static void *thread_client() {
   return NULL;
 }
 static void *thread_server() {
-  client_loop(server_to_smart);
+  pid_t pid = getgid();
+  server_loop(server_to_smart, pid);
   return NULL;
 }
