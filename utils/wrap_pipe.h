@@ -18,6 +18,5 @@ extern int write_into_pipe(const PipeDescriptor *pipe, const void *message,
                            const size_t size);
 extern int read_into_pipe(const PipeDescriptor *pipe, void *message,
                           const size_t size);
-
 extern void close_pipe(const PipeDescriptor *pipe);
 #endif

@@ -9,7 +9,10 @@
 #include "../utils/comunication.h"
 #include "../utils/productor_consomateur.h"
 #include "../utils/wrap_signal.h"
+#include "client.h"
 #include "init.h"
+#include "server.h"
+#include "trace.h"
 
 #define BUFFER_SIZE 10
 #define NB_THREAD 4
