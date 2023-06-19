@@ -3,6 +3,6 @@
 
 #include "../utils/productor_consomateur.h"
 
-extern void server_loop(proc_cons_locker *locker);
+extern void server_loop(proc_cons_locker *locker_producteur);
 
 #endif
