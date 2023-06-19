@@ -135,7 +135,6 @@ static void check_pipe(PipeCommunication *pipe) {
   } else {
     Message message;
     int nb_byte = read_into_pipe(&pipe->writer, &message, sizeof(Message));
-
     printf("%d, %s\n", message.type, message.message);
   }
 }

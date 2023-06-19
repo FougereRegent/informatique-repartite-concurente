@@ -29,6 +29,10 @@ static void *thread_server();
 
 /*Déclaration des variables static*/
 static pthread_t threads[NB_THREAD];
+static proc_cons_locker *trace_to_smart;
+static proc_cons_locker *smart_to_trace;
+static proc_cons_locker *smart_to_client;
+static proc_cons_locker *server_to_smart;
 
 extern void slave_init(PipeCommunication *pipe) {
   change_signal(SIGTERM, &kill_process);
@@ -67,6 +71,11 @@ static int init_buffer() {
 
   if (error == ERROR)
     return error;
+
+  trace_to_smart = create_lock(buffer_trace_to_smart, BUFFER_SIZE);
+  smart_to_trace = create_lock(buffer_smart_to_trace, BUFFER_SIZE);
+  smart_to_client = create_lock(buffer_smart_to_client, BUFFER_SIZE);
+  server_to_smart = create_lock(buffer_server_to_smart, BUFFER_SIZE);
 
   return error;
 }
