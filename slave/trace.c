@@ -8,10 +8,13 @@ extern void trace_loop(proc_cons_locker *locker_producteur,
                        PipeCommunication *pipes) {
 
   Message message_consomateur;
+  Message message_observer;
 
   while (1) {
     message_consomateur = consume(locker_consomateur);
+    write_into_pipe(&pipes->writer, &message_consomateur, sizeof(Message));
+    read_into_pipe(&pipes->reader, &message_observer, sizeof(Message));
 
-    write_into_pipe(pipes->writer, const void *message, const size_t size)
+    product(locker_producteur, message_observer);
   }
 }
