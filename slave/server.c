@@ -25,6 +25,7 @@ extern void server_loop(proc_cons_locker *locker_producteur, pid_t pid) {
   int socket_client;
   sockaddr_un client_addr;
   Message init_socket;
+  Message log_socket;
   char name_file[SIZE_NAME_FILE];
   char pid_string[SIZE_PID_STRING];
   int ret;
@@ -40,7 +41,11 @@ extern void server_loop(proc_cons_locker *locker_producteur, pid_t pid) {
   init_socket.type = SET_CONF;
   strncpy(init_socket.message, name_file, strlen(name_file));
 
+  log_socket.type = LOG;
+  strncpy(log_socket.message, "Socket créer pour le ", 10);
+
   product(locker_producteur, init_socket);
+  product(locker_producteur, log_socket);
 
   while (1) {
   }
